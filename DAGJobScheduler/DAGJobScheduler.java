@@ -77,7 +77,7 @@ public class DAGJobScheduler{
 		*
 		*	Each line in the file should be in the format:
 		*	
-		*	<vertex key>, <vertex weight>: <ancestor vertex key 1>, <ancestor vertex key 2>,...,<ancestor vertex key n>
+		*	<vertex key>, <vertex weight>: <child vertex key 1>, <child vertex key 2>,...,<child vertex key n>
 		*	#denotes a comment line
 		*
 		**/
