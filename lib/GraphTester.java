@@ -12,9 +12,10 @@ public class GraphTester{
 		g.addEdge("u", t, 3);
 		g.addEdge("u", "v", 1);
 		g.addEdge("v", t, 1);
+		g.addVertex("w");
 		Map <Object, Object []> shortPath = null;
-		shortPath = g.shortestPath("u",t);
+		shortPath = g.shortestPath(s);
 		if(shortPath != null)
-			System.out.println(shortPath.get(t)[1]);
+			System.out.println(shortPath.get(t)[0]);
 	}
 }

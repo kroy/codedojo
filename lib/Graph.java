@@ -83,11 +83,13 @@ public class Graph{
 	private HashMap <Object,Vertex> vertexList;	//turn this into a hashset
 	private HashSet <Edge> edgeList;
 	private int numVertices, numEdges;
+	private boolean negativeEdges;
 
 	public Graph(){
 		vertexList = new HashMap <Object, Vertex> (100, .75f);
 		edgeList = new HashSet <Edge> (40, .75f);
 		numVertices = numEdges = 0;
+		negativeEdges = false;
 	}
 
 	public boolean addVertex(Object node){
@@ -117,7 +119,7 @@ public class Graph{
 			return false;
 	}
 
-	public Map <Object, Object []> shortestPath(Object s, Object t){
+	private Map <Object, Object []> dijkstras(Object s, Object t){
 		HashSet <Vertex> unknown = new HashSet <Vertex> (vertexList.values());
 		for(Iterator <Vertex> i = unknown.iterator(); i.hasNext();){
 			Vertex v = i.next();
@@ -127,15 +129,16 @@ public class Graph{
 		HashSet <Vertex> known = new HashSet <Vertex> ();
 		Vertex start = vertexList.get(s);
 		Vertex end = null;
-		if (t == null){
-			return null;
-		}
-		end = vertexList.get(t);
+		// if (t == null){
+		// 	return null;
+		// }
+		if(t!=null)
+			end = vertexList.get(t);
 		start.distance = 0;
 		PriorityQueue <Vertex> met = new PriorityQueue <Vertex> ();	//nodes we've met, but we don't have the shortest path to yet
 		met.add(start);
 		Vertex last = start;
-		while(!last.equals(end) && (unknown.size()!=0 || met.size()!=0)){	//check for when last is null, and whether .equals(null) will throw an exception
+		while((unknown.size()!=0 && met.size()!=0)){	//check for when last is null, and whether .equals(null) will throw an exception
 			Vertex next = met.poll();
 			for(Iterator <Edge> i = next.incident.iterator(); i.hasNext();){
 				Edge e = i.next();
@@ -169,5 +172,21 @@ public class Graph{
 		}
 
 		return paths;
+	}
+
+	public Object [] shortestPath(Object s, Object t){
+		if(negativeEdges){
+			return null;
+		}
+		return dijkstras(s, null).get(t);
+	}
+
+	public Map <Object, Object []> shortestPath(Object s){
+		if(negativeEdges){
+			return null;
+		}
+		else {
+			return dijkstras(s, null);
+		}
 	}
 }
