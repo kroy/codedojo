@@ -125,12 +125,16 @@ public class Graph{
 		}
 		HashSet <Vertex> known = new HashSet <Vertex> ();
 		Vertex start = vertexList.get(s);
-		Vertex end = vertexList.get(t);
+		Vertex end = null;
+		if (t == null){
+			return null;
+		}
+		end = vertexList.get(t);
 		start.distance = 0;
 		PriorityQueue <Vertex> met = new PriorityQueue <Vertex> ();	//nodes we've met, but we don't have the shortest path to yet
 		met.add(start);
 		Vertex last = start;
-		while(!last.equals(end)){//&& unknown.size()!=0 && met.size!=0
+		while(!last.equals(end) && (unknown.size()!=0 || met.size()!=0)){	//check for when last is null, and whether .equals(null) will throw an exception
 			Vertex next = met.poll();
 			for(Iterator <Edge> i = next.incident.iterator(); i.hasNext();){
 				Edge e = i.next();
