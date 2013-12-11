@@ -7,10 +7,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class Graph{
-	
+
 	private class Vertex implements Comparable{
 		Object node;	//the object represented by this vertex
 						//an object should be represented by exactly one vertex. Object equality is determined by the equals() method
+						//should add generics support
 		LinkedList <Edge> incident;	//List of all edges incident to this vertex
 		double distance;	//the distance to this node along the shortest path
 		Vertex predecessor;	//predecessor vertex along the shortest path
@@ -116,7 +117,7 @@ public class Graph{
 			return false;
 	}
 
-	public Map <LinkedList <Object>, Double> shortestPath(Object s, Object t){
+	public Map <Object, Object []> shortestPath(Object s, Object t){
 		HashSet <Vertex> unknown = new HashSet <Vertex> (vertexList.values());
 		for(Iterator <Vertex> i = unknown.iterator(); i.hasNext();){
 			Vertex v = i.next();
@@ -152,15 +153,21 @@ public class Graph{
 			known.add(next);
 			last = next;
 		}
-		LinkedList <Object> shortPath = new LinkedList <Object> ();
-		while(!last.equals(start)){
-			shortPath.addFirst(last.node);
-			last = last.predecessor;
+		Map <Object, Object []> paths = new HashMap <Object, Object []> ();
+		for(Iterator j = vertexList.values().iterator(); j.hasNext();){
+			LinkedList <Object> shortPath = new LinkedList <Object> ();
+			Object [] pathAndValue = new Object [2];
+			last = (Vertex)j.next();
+			pathAndValue[1] = last.distance;
+			Vertex next = last;
+			while(next != null){
+				shortPath.addFirst(next.node);
+				next = next.predecessor;
+			}
+			pathAndValue[0] = shortPath;
+			paths.put(last.node, pathAndValue);
 		}
-		shortPath.addFirst(start);
 
-		Map <LinkedList <Object>, Double> pathAndValue = new HashMap <LinkedList <Object>, Double> ();
-		pathAndValue.put(shortPath, new Double(end.distance));
-		return pathAndValue;
+		return paths;
 	}
 }
