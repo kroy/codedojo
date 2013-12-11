@@ -4,11 +4,13 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Graph{
 	
 	private class Vertex implements Comparable{
 		Object node;	//the object represented by this vertex
+						//an object should be represented by exactly one vertex. Object equality is determined by the equals() method
 		LinkedList <Edge> incident;	//List of all edges incident to this vertex
 		double distance;	//the distance to this node along the shortest path
 		Vertex predecessor;	//predecessor vertex along the shortest path
@@ -114,7 +116,7 @@ public class Graph{
 			return false;
 	}
 
-	public double shortestPath(Object s, Object t){
+	public Map <LinkedList <Object>, Double> shortestPath(Object s, Object t){
 		HashSet <Vertex> unknown = new HashSet <Vertex> (vertexList.values());
 		for(Iterator <Vertex> i = unknown.iterator(); i.hasNext();){
 			Vertex v = i.next();
@@ -128,13 +130,13 @@ public class Graph{
 		PriorityQueue <Vertex> met = new PriorityQueue <Vertex> ();	//nodes we've met, but we don't have the shortest path to yet
 		met.add(start);
 		Vertex last = start;
-		while(!last.equals(end)){
+		while(!last.equals(end)){//&& unknown.size()!=0 && met.size!=0
 			Vertex next = met.poll();
 			for(Iterator <Edge> i = next.incident.iterator(); i.hasNext();){
 				Edge e = i.next();
 				Vertex v = e.otherVertex(next);
 				if(v == null)
-					return -1;
+					return null;
 				double candidateDist = next.distance + e.weight;
 				if(candidateDist < v.distance){
 					v.distance = candidateDist;
@@ -146,7 +148,15 @@ public class Graph{
 			known.add(next);
 			last = next;
 		}
+		LinkedList <Object> shortPath = new LinkedList <Object> ();
+		while(!last.equals(start)){
+			shortPath.addFirst(last.node);
+			last = last.predecessor;
+		}
+		shortPath.addFirst(start);
 
-		return end.distance;
+		Map <LinkedList <Object>, Double> pathAndValue = new HashMap <LinkedList <Object>, Double> ();
+		pathAndValue.put(shortPath, new Double(end.distance));
+		return pathAndValue;
 	}
 }
