@@ -16,6 +16,6 @@ public class GraphTester{
 		Map <Object, Object []> shortPath = null;
 		shortPath = g.shortestPath(s);
 		if(shortPath != null)
-			System.out.println(shortPath.get(t)[0]);
+			System.out.println(shortPath.get("w")[0]);
 	}
 }

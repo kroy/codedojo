@@ -23,6 +23,7 @@ public class DAGJobScheduler{
 		LinkedList <Vertex> adjacencyListIn;
 		LinkedList <Vertex> adjacencyListOut;
 		boolean visited;
+		Vertex predecessor;
 
 		public Vertex(int key){
 			this.key = key;
@@ -31,6 +32,7 @@ public class DAGJobScheduler{
 			adjacencyListOut = new LinkedList <Vertex> ();
 			adjacencyListIn = new LinkedList <Vertex> ();
 			visited = false;
+			predecessor = null;
 		}
 
 		public String toString(){
@@ -204,10 +206,25 @@ public class DAGJobScheduler{
 					Vertex v = i.next();
 					// System.out.println(v);
 					// System.out.println("u: " + u.distance + " v: " + v.distance);
-					v.distance = Math.max(v.distance, u.distance+v.weight);
+					//v.distance = Math.max(v.distance, u.distance+v.weight);
+					if(u.distance+v.weight > v.distance){
+						v.distance = u.distance+v.weight;
+						v.predecessor = u;
+					}
 				}
 			}
 			return end.distance;
+		}
+
+		private LinkedList <Vertex> criticalPath(){
+			minCompletionTime();
+			Vertex curr = end;
+			LinkedList <Vertex> returner = new LinkedList <Vertex> ();
+			while(curr!=null){
+				returner.addFirst(curr);
+				curr = curr.predecessor;
+			}
+			return returner;
 		}
 	}
 
@@ -215,7 +232,7 @@ public class DAGJobScheduler{
 		DAGJobScheduler tester = new DAGJobScheduler();
 		DAGJobScheduler.DAG test = tester.new DAG("test.in");
 		//System.out.println(test.topoSort());
-		System.out.println(test.minCompletionTime());
+		System.out.println(test.criticalPath());
 	}
 
 
